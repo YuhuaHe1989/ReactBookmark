@@ -3,6 +3,8 @@ import $ from "jquery";
 import List from "./List";
 import Form from "./Form";
 
+import API from "../API"
+
 // Controller-View Component
 class AppController extends React.Component {
   constructor(props) {
@@ -10,19 +12,23 @@ class AppController extends React.Component {
     this.state = { bookmarks: [] };
   }
   insertBookmark(newBookmark) {
-    $.post("/api/links", newBookmark)
-      .success(data => {
+    API.saveBookmark(newBookmark)
+      .done(data => {
         this.setState({
           bookmarks: this.state.bookmarks.concat(data)
         });
       });
   }
   componentDidMount() {
-    console.log("did mount");
-    $.get("/api/links")
-      .success(data => {
-        this.setState({ bookmarks: data.links });
+    API.getAllBookmarks()
+      .done(data => {
+        this.setState({ bookmarks: data.links});
       });
+    // console.log("did mount");
+    // $.get("/api/links")
+    //   .success(data => {
+    //     this.setState({ bookmarks: data.links });
+    //   });
   }
   componentWillMount() {
     console.log("will mount");

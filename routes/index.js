@@ -1,25 +1,21 @@
 var express = require('express');
 var router = express.Router();
 
-router.get('/', function(req, res, next) {
+router.get('/express', function(req, res, next) {
   res.render('index', { title: 'React' });
 });
 
-var links = [
-  { title: 'Fake Link 1', url: 'fake.url.1' },
-  { title: 'Fake Link 2', url: 'fake.url.2' },
-  { title: 'Fake Link 3', url: 'fake.url.3' }
-]
+var links = [];
 
 router.get('/api/links', function(req, res, next) {
-  res.json({ links: links});
+   res.json({ links: links });
 });
 
 router.post('/api/links', function(req, res, next) {
-  // req.body
-  var newLink = req.body;
-  links.push(newLink);
-  res.json({ links: links});
+   var newLink = req.body;
+   newLink.id = Date.now();
+   links.push(newLink);
+   res.json(newLink);
 });
 
 module.exports = router;

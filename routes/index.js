@@ -22,5 +22,4 @@ router.post('/api/links', function(req, res, next) {
   res.json({ links: links});
 });
 
-
 module.exports = router;

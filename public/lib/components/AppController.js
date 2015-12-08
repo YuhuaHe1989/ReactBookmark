@@ -1,48 +1,42 @@
 import React from "react";
-import $ from "jquery";
 import List from "./List";
 import Form from "./Form";
 
-import API from "../API"
+import LinkActions from "../actions/LinkActions";
+
+import LinkStore from "../stores/LinkStore";
+
+let _getAppState = () => {
+  return { bookmarks: LinkStore.getAll() }
+}
 
 // Controller-View Component
 class AppController extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { bookmarks: [] };
-  }
-  insertBookmark(newBookmark) {
-    API.saveBookmark(newBookmark)
-      .done(data => {
-        this.setState({
-          bookmarks: this.state.bookmarks.concat(data)
-        });
-      });
+    this.state = _getAppState();
+    this._onChange = this._onChange.bind(this);
   }
   componentDidMount() {
-    API.getAllBookmarks()
-      .done(data => {
-        this.setState({ bookmarks: data.links});
-      });
-    // console.log("did mount");
-    // $.get("/api/links")
-    //   .success(data => {
-    //     this.setState({ bookmarks: data.links });
-    //   });
+    LinkActions.getAllBookmarks();
+    LinkStore.startListening(this._onChange);
   }
-  componentWillMount() {
-    console.log("will mount");
+  componentWillUnmount() {
+    LinkStore.stopListening(this._onChange);
   }
-  componentWillUpdate() {
-    console.log("will update");
+  _onChange() {
+    console.log("5. The store has emitted a change event")
+    this.setState(_getAppState());
   }
   render() {
-    console.log("render");
     return (
       <div className="app">
         <h2>Bookmarks!</h2>
         <List bookmarks={this.state.bookmarks} />
-        <Form addBookmark={this.insertBookmark.bind(this)} />
+        <div>
+          Total: {this.state.bookmarks.length}
+        </div>
+        <Form />
       </div>
     );
   }

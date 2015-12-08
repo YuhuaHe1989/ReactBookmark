@@ -1,11 +1,23 @@
 import {get, post} from "jquery";
 
+import ServerActions from "./actions/ServerActions";
+
 let API = {
-  saveBookmark(newBookmark) {
-    return post("/api/links", newBookmark);
+  fetchAllBookmarks() {
+    console.log("2. In the API.fetchAllBookmarks()")
+    get("/api/links").done(data => ServerActions.receiveLinks(data.links));
   },
-  getAllBookmarks(newBookmark) {
-    return get("/api/links");
+  saveBookmark(newBookmark) {
+    post("/api/links", newBookmark)
+      .done(data => ServerActions.receiveOneLink(data));
+  },
+  deleteBookmark(bookmark) {
+    post("/api/deletelink", bookmark)
+      .done(data => ServerActions.receiveLinks(data.links));
+  },
+  saveBookmarkInfo(bookmark) {
+    post("/api/savebookmarkinfo", bookmark)
+      .done(data => console.log('bookmark',data));
   }
 };
 
